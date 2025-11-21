@@ -27,7 +27,9 @@ export default class CategoryContentPageActions {
    */
   async goToSubCategory(targetSubCategory) {
     logger.info(`Navigating to subCategory ${targetSubCategory}`);
-    const subCategory = this.categoryContentPage.getSubcategoryRef(targetSubCategory.toUpperCase());
+    const subCategory = this.categoryContentPage.getSubcategoryRef(
+      targetSubCategory.toUpperCase(),
+    );
     await t.hover(subCategory).click(subCategory);
   }
 }

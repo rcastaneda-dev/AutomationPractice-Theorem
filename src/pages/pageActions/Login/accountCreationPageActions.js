@@ -1,7 +1,16 @@
 import { t } from 'testcafe';
 import logger from '@config/logger';
 import AccountCreationPage from '@pages/Login/accountCreationPage';
-import { address, company, datatype, date, internet, lorem, name, phone } from 'faker';
+import {
+  address,
+  company,
+  datatype,
+  date,
+  internet,
+  lorem,
+  name,
+  phone,
+} from 'faker';
 
 export default class AccountCreationPageActions {
   /**
@@ -17,7 +26,11 @@ export default class AccountCreationPageActions {
    * @param {Object} customParams contains custom parameters to override default values.
    */
   async fillPersonalInfo(email, customParams = {}) {
-    logger.info(`Filling personal info with the following custom params: ${JSON.stringify(customParams)}`);
+    logger.info(
+      `Filling personal info with the following custom params: ${JSON.stringify(
+        customParams,
+      )}`,
+    );
     const personalInfoParams = {
       email,
       lastName: name.lastName(),
@@ -48,15 +61,15 @@ export default class AccountCreationPageActions {
       )
       .click(this.accountCreationPage.birthDaySelect)
       .click(
-        this.accountCreationPage.daySelectOptions.withText(dayRandomOption)
+        this.accountCreationPage.daySelectOptions.withText(dayRandomOption),
       )
       .click(this.accountCreationPage.birthMonthSelect)
       .click(
-        this.accountCreationPage.monthSelectOptions.withText(monthRandomOption)
+        this.accountCreationPage.monthSelectOptions.withText(monthRandomOption),
       )
       .click(this.accountCreationPage.birthYearSelect)
       .click(
-        this.accountCreationPage.yearSelectOptions.withText(yearRandomOption)
+        this.accountCreationPage.yearSelectOptions.withText(yearRandomOption),
       )
       .click(this.accountCreationPage.newsLetterCheckbox)
       .click(this.accountCreationPage.specialOffersChecbox);
@@ -67,7 +80,11 @@ export default class AccountCreationPageActions {
    * @param {Object} customParams contains custom parameters to override default values.
    */
   async fillAddress(customParams = {}) {
-    logger.info(`Filling address section with the following custom params: ${JSON.stringify(customParams)}`);
+    logger.info(
+      `Filling address section with the following custom params: ${JSON.stringify(
+        customParams,
+      )}`,
+    );
 
     const addressParams = {
       additionalInfo: lorem.sentence(),
@@ -92,22 +109,45 @@ export default class AccountCreationPageActions {
     logger.info(addressParams.address);
 
     const randomStateOption = address.state();
-    const zipCodeForGivenState = address.zipCodeByState(randomStateOption).split('-')[0];
+    const zipCodeForGivenState = address
+      .zipCodeByState(randomStateOption)
+      .split('-')[0];
 
     await t
-      .typeText(this.accountCreationPage.firstNamAddressInput, addressParams.name)
-      .typeText(this.accountCreationPage.lastNameAddressInput, addressParams.lastName)
+      .typeText(
+        this.accountCreationPage.firstNamAddressInput,
+        addressParams.name,
+      )
+      .typeText(
+        this.accountCreationPage.lastNameAddressInput,
+        addressParams.lastName,
+      )
       .typeText(this.accountCreationPage.companyInput, addressParams.company)
-      .typeText(this.accountCreationPage.addressInput, addressParams.address, specialTypingOptions)
-      .typeText(this.accountCreationPage.addressLine2Input, addressParams.addressLine2)
+      .typeText(
+        this.accountCreationPage.addressInput,
+        addressParams.address,
+        specialTypingOptions,
+      )
+      .typeText(
+        this.accountCreationPage.addressLine2Input,
+        addressParams.addressLine2,
+      )
       .typeText(this.accountCreationPage.cityInput, addressParams.city)
       .click(this.accountCreationPage.stateSelect)
-      .click(this.accountCreationPage.stateSelectOptions.withText(randomStateOption))
+      .click(
+        this.accountCreationPage.stateSelectOptions.withText(randomStateOption),
+      )
       .typeText(this.accountCreationPage.postalCodeInput, zipCodeForGivenState)
-      .typeText(this.accountCreationPage.additionalInfoInput, addressParams.additionalInfo)
+      .typeText(
+        this.accountCreationPage.additionalInfoInput,
+        addressParams.additionalInfo,
+      )
       .typeText(this.accountCreationPage.phoneInput, addressParams.phone)
       .typeText(this.accountCreationPage.mobileInput, addressParams.mobile)
-      .typeText(this.accountCreationPage.aliasInput, addressParams.addressAlias);
+      .typeText(
+        this.accountCreationPage.aliasInput,
+        addressParams.addressAlias,
+      );
   }
 
   /**

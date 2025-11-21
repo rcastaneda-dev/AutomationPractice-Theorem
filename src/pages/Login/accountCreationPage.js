@@ -10,14 +10,21 @@ export default class AccountCreationPage extends ContentBasePage {
     this.newAccountForm = this.container.find('#account-creation_form');
 
     // Personal Info
-    this.newPersonalInfoFormSection = this.newAccountForm.child('div.account_creation');
-    this.personalInfoHeading = this.newPersonalInfoFormSection.child('h3.page-subheading');
+    this.newPersonalInfoFormSection = this.newAccountForm.child(
+      'div.account_creation',
+    );
+    this.personalInfoHeading =
+      this.newPersonalInfoFormSection.child('h3.page-subheading');
     this.titleRadioButtons = this.newPersonalInfoFormSection.find('div.radio');
-    this.firstNameInput = this.newPersonalInfoFormSection.find('#customer_firstname');
-    this.lastNameInput = this.newPersonalInfoFormSection.find('#customer_lastname');
+    this.firstNameInput = this.newPersonalInfoFormSection.find(
+      '#customer_firstname',
+    );
+    this.lastNameInput =
+      this.newPersonalInfoFormSection.find('#customer_lastname');
     this.emailInput = this.newPersonalInfoFormSection.find('#email');
     this.passwordInput = this.newPersonalInfoFormSection.find('#passwd');
-    this.newsLetterCheckbox = this.newPersonalInfoFormSection.find('#newsletter');
+    this.newsLetterCheckbox =
+      this.newPersonalInfoFormSection.find('#newsletter');
     this.specialOffersChecbox = this.newPersonalInfoFormSection.find('#optin');
     this.birthDaySelect = this.newPersonalInfoFormSection.find('#days');
     this.daySelectOptions = this.birthDaySelect.child('option');
