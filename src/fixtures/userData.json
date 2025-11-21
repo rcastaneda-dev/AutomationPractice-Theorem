@@ -1,0 +1,56 @@
+{
+  "validUsers": [
+    {
+      "email": "test.user1@example.com",
+      "password": "TestPassword123",
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    {
+      "email": "test.user2@example.com",
+      "password": "TestPassword456",
+      "firstName": "Jane",
+      "lastName": "Smith"
+    }
+  ],
+  "invalidUsers": [
+    {
+      "email": "invalid-email",
+      "password": "short",
+      "expectedError": "Invalid email address"
+    },
+    {
+      "email": "test@example.com",
+      "password": "",
+      "expectedError": "Password is required"
+    }
+  ],
+  "products": [
+    {
+      "name": "Printed Dress",
+      "price": "$50.99",
+      "category": "Dresses",
+      "hasDiscount": false
+    },
+    {
+      "name": "Printed Summer Dress",
+      "price": "$28.98",
+      "category": "Dresses",
+      "hasDiscount": true
+    }
+  ],
+  "searchQueries": [
+    {
+      "query": "dress",
+      "expectedResults": 7
+    },
+    {
+      "query": "blouse",
+      "expectedResults": 1
+    },
+    {
+      "query": "nonexistent",
+      "expectedResults": 0
+    }
+  ]
+}
