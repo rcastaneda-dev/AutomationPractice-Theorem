@@ -1,22 +1,24 @@
-{ 
-    "compilerOptions": {
-        "baseUrl": ".",
-        "jsx": "preserve",
-        "paths": {
-            "*": [
-                "*",
-                "src/pages/*",
-                "src/pages/pageActions/*",
-                "tests/*",
-                "config/*",
-                "src/constants/*"
-            ],
-            "@pages/*": ["src/pages/*"],            
-            "@pageActions/*": ["src/pages/pageActions/*"],
-            "@tests/*": ["tests/*"],
-            "@config/*": ["config/*"],
-            "@constants/*": ["src/constants/*"]
-        }
-    },
-    "exclude": ["node_modules"]
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "paths": {
+      "*": [
+        "*",
+        "src/pages/*",
+        "src/pages/pageActions/*",
+        "tests/*",
+        "config/*",
+        "src/constants/*"
+      ],
+      "@pages/*": ["src/pages/*"],
+      "@pageActions/*": ["src/pages/pageActions/*"],
+      "@tests/*": ["tests/*"],
+      "@config/*": ["config/*"],
+      "@constants/*": ["src/constants/*"],
+      "@utils/*": ["src/utils/*"],
+      "@fixtures/*": ["src/fixtures/*"]
+    }
+  },
+  "exclude": ["node_modules"]
 }
