@@ -2,12 +2,12 @@ name: TestCafe E2E Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
-  schedule:
-    # Run nightly at 2 AM UTC
-    - cron: '0 2 * * *'
+    branches: [main, develop]
+  #schedule:
+  # Run nightly at 2 AM UTC
+  # - cron: '0 2 * * *'
   workflow_dispatch:
     # Allow manual trigger
 
@@ -234,7 +234,7 @@ jobs:
           script: |
             const fs = require('fs');
             const reportPath = 'merged-reports/report.json';
-            
+
             if (fs.existsSync(reportPath)) {
               const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
               const passed = report.passed || 0;
