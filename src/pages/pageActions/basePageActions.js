@@ -32,7 +32,10 @@ export default class BasePageActions {
    */
   async goToCategory(targetCategory) {
     logger.info(`Navigating to category ${targetCategory}`);
-    const menuOption = await this.headerPage.categoryOptions.withAttribute('title', targetCategory);
+    const menuOption = await this.headerPage.categoryOptions.withAttribute(
+      'title',
+      targetCategory,
+    );
     await t.hover(menuOption).click(menuOption);
   }
 

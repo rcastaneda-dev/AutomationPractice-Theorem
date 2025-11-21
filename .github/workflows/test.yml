@@ -1,0 +1,274 @@
+name: TestCafe E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  #schedule:
+  # Run nightly at 2 AM UTC
+  # - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+env:
+  NODE_VERSION: '16'
+  BASE_URL: 'http://automationpractice.com/index.php'
+  SCREENSHOT_ON_FAIL: 'true'
+  VIDEO_RECORDING: 'true'
+  LOG_LEVEL: 'info'
+
+jobs:
+  # Lint and code quality check
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint || echo "Lint errors found"
+
+      - name: Run Prettier check
+        run: npm run format:check || echo "Format issues found"
+
+  # Chrome tests
+  test-chrome:
+    name: Tests - Chrome
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        # Run tests in parallel chunks
+        shard: [1, 2]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TestCafe tests in Chrome
+        run: |
+          npm run test:chrome:ci
+        env:
+          BROWSER: chrome
+          HEADLESS: true
+          CONCURRENCY: 2
+          RETRY_COUNT: 1
+          TEST_USER1_EMAIL: ${{ secrets.TEST_USER1_EMAIL }}
+          TEST_USER1_PASSWORD: ${{ secrets.TEST_USER1_PASSWORD }}
+          TEST_USER2_EMAIL: ${{ secrets.TEST_USER2_EMAIL }}
+          TEST_USER2_PASSWORD: ${{ secrets.TEST_USER2_PASSWORD }}
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-screenshots-shard-${{ matrix.shard }}
+          path: screenshots/
+          retention-days: 7
+
+      - name: Upload videos on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-videos-shard-${{ matrix.shard }}
+          path: videos/
+          retention-days: 7
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-test-reports-shard-${{ matrix.shard }}
+          path: reports/
+          retention-days: 30
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: chrome-logs-shard-${{ matrix.shard }}
+          path: logs/
+          retention-days: 7
+
+  # Firefox tests
+  test-firefox:
+    name: Tests - Firefox
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TestCafe tests in Firefox
+        run: |
+          npm run test:firefox:ci
+        env:
+          BROWSER: firefox
+          HEADLESS: true
+          CONCURRENCY: 1
+          RETRY_COUNT: 1
+          TEST_USER1_EMAIL: ${{ secrets.TEST_USER1_EMAIL }}
+          TEST_USER1_PASSWORD: ${{ secrets.TEST_USER1_PASSWORD }}
+          TEST_USER2_EMAIL: ${{ secrets.TEST_USER2_EMAIL }}
+          TEST_USER2_PASSWORD: ${{ secrets.TEST_USER2_PASSWORD }}
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: firefox-screenshots
+          path: screenshots/
+          retention-days: 7
+
+      - name: Upload videos on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: firefox-videos
+          path: videos/
+          retention-days: 7
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: firefox-test-reports
+          path: reports/
+          retention-days: 30
+
+  # Smoke tests - quick validation
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run smoke tests
+        run: npm run test:smoke
+        env:
+          BROWSER: chrome
+          HEADLESS: true
+          TEST_USER1_EMAIL: ${{ secrets.TEST_USER1_EMAIL }}
+          TEST_USER1_PASSWORD: ${{ secrets.TEST_USER1_PASSWORD }}
+          TEST_USER2_EMAIL: ${{ secrets.TEST_USER2_EMAIL }}
+          TEST_USER2_PASSWORD: ${{ secrets.TEST_USER2_PASSWORD }}
+
+      - name: Upload smoke test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: smoke-test-reports
+          path: reports/
+          retention-days: 7
+
+  # Generate and publish test report
+  report:
+    name: Generate Test Report
+    runs-on: ubuntu-latest
+    needs: [test-chrome, test-firefox]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download all test reports
+        uses: actions/download-artifact@v3
+        with:
+          path: all-reports/
+
+      - name: Merge test reports
+        run: |
+          mkdir -p merged-reports
+          find all-reports -name "*.json" -exec cp {} merged-reports/ \;
+
+      - name: Upload merged reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: merged-test-reports
+          path: merged-reports/
+          retention-days: 30
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'merged-reports/report.json';
+
+            if (fs.existsSync(reportPath)) {
+              const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+              const passed = report.passed || 0;
+              const failed = report.failed || 0;
+              const total = passed + failed;
+              
+              const comment = `## 🧪 Test Results
+              
+              - **Total Tests:** ${total}
+              - **Passed:** ✅ ${passed}
+              - **Failed:** ❌ ${failed}
+              - **Success Rate:** ${total > 0 ? ((passed / total) * 100).toFixed(2) : 0}%
+              
+              [View detailed reports in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+  # Notify on failure
+  notify:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [test-chrome, test-firefox, smoke-tests]
+    if: failure() && github.ref == 'refs/heads/main'
+    steps:
+      - name: Send notification
+        run: |
+          echo "Tests failed on main branch!"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Commit: ${{ github.sha }}"
+          # Add Slack/Discord/Email notification here if needed

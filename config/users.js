@@ -1,14 +1,13 @@
-const users = {
-  testUser1: {
-    email: 'Harrison30@gmail.com',
-    password: 'oO_PI6jocB1JOLN',
-  },
-  testUser2: {
-    email: 'Bryon55@gmail.com',
-    password: 'UYn4zvvJS45jLqB',
-  },
-};
+const { getCredentials } = require('./environment');
 
-export default function getCredentials(keyword) {
-  return users[keyword];
+/**
+ * Get user credentials from environment configuration
+ * @param {string} keyword - User identifier (e.g., 'testUser1', 'testUser2')
+ * @returns {Object} User credentials with email and password
+ *
+ * @deprecated This module is kept for backward compatibility.
+ * Consider using getCredentials from config/environment.js directly.
+ */
+export default function getUserCredentials(keyword) {
+  return getCredentials(keyword);
 }

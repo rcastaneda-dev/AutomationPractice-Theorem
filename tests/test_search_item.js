@@ -1,4 +1,3 @@
-import { t } from 'testcafe';
 import urls from '@constants/urls';
 import getCredentials from '@config/users';
 import BasePageActions from '@pageActions/basePageActions';
@@ -14,7 +13,7 @@ fixture('Test - Items Search')
   .meta('smoke', 'true')
   .meta('feature', 'Search')
   .page(urls.BASE_URL)
-  .beforeEach(async (t) => {
+  .beforeEach(async t => {
     await basePageActions.goToSignIn();
     await loginPageActions.logIn(email, password);
   });
@@ -37,9 +36,11 @@ const dataset = [
 ];
 
 dataset.forEach(({ testCaseId, itemName, hasDiscount, price, title }) => {
-  test.meta('testCaseId', testCaseId)(title, async (t) => {
+  test.meta('testCaseId', testCaseId)(title, async t => {
     await basePageActions.search(itemName);
-    const matchingItem = await searchResultsPageActions.filterItemByPrice(price);
+    const matchingItem = await searchResultsPageActions.filterItemByPrice(
+      price,
+    );
     await searchResultsPageActions.verifyMatchingItemIsVisible(matchingItem);
     await searchResultsPageActions.verifyDiscountLabel(hasDiscount);
   });

@@ -1,4 +1,3 @@
-import { Selector } from 'testcafe';
 import ContentBasePage from '@pages/contentBasePage';
 
 export default class CategoryContentPage extends ContentBasePage {
@@ -21,6 +20,9 @@ export default class CategoryContentPage extends ContentBasePage {
    * @returns {Selector} represents the href for the given subcategory item
    */
   getSubcategoryRef(subCategory) {
-    return this.subCategories.child('h5').child('a.subcategory-name').withText(subCategory);
+    return this.subCategories
+      .child('h5')
+      .child('a.subcategory-name')
+      .withText(subCategory);
   }
 }

@@ -1,5 +1,4 @@
 import { t } from 'testcafe';
-import logger from '@config/logger';
 import MyAccountPage from '@pages/Account/myAccountPage';
 
 export default class MyAccountPageActions {

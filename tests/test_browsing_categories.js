@@ -1,4 +1,3 @@
-import { t } from 'testcafe';
 import urls from '@constants/urls';
 import getCredentials from '@config/users';
 import Category from '@constants/existingCategories';
@@ -16,7 +15,7 @@ fixture('Test - Browsing & Navigation')
   .meta('smoke', 'true')
   .meta('feature', 'Browsing')
   .page(urls.BASE_URL)
-  .beforeEach(async (t) => {
+  .beforeEach(async t => {
     await basePageActions.goToSignIn();
     await loginPageActions.logIn(email, password);
   });
@@ -52,10 +51,8 @@ const dataset = [
   },
 ];
 
-dataset.forEach(({
-  testCaseId, targetCategory, targetSubCategory, title,
-}) => {
-  test.meta('testCaseId', testCaseId)(title, async (t) => {
+dataset.forEach(({ testCaseId, targetCategory, targetSubCategory, title }) => {
+  test.meta('testCaseId', testCaseId)(title, async t => {
     await basePageActions.goToCategory(targetCategory);
     await categoryContentPageActions.verifyCategoryPageTitle(targetCategory);
     await categoryContentPageActions.goToSubCategory(targetSubCategory);

@@ -4,7 +4,22 @@
   "description": "Base framework implementation for AutomationPractice.com website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "testcafe chrome tests/*.js",
+    "test:chrome": "testcafe chrome tests/*.js",
+    "test:chrome:headless": "testcafe chrome:headless tests/*.js",
+    "test:chrome:ci": "testcafe chrome:headless tests/*.js --reporter spec,json:reports/report.json",
+    "test:firefox": "testcafe firefox tests/*.js",
+    "test:firefox:headless": "testcafe firefox:headless tests/*.js",
+    "test:firefox:ci": "testcafe firefox:headless tests/*.js --reporter spec,json:reports/report.json",
+    "test:edge": "testcafe edge tests/*.js",
+    "test:parallel": "testcafe chrome tests/*.js --concurrency 2",
+    "test:smoke": "testcafe chrome tests/*.js --test-meta smoke=true",
+    "test:report": "testcafe chrome tests/*.js --reporter html:reports/report.html",
+    "test:ci": "testcafe chrome:headless tests/*.js --reporter spec,json:reports/report.json,html:reports/report.html",
+    "lint": "eslint . --ext .js --ignore-path .gitignore",
+    "lint:fix": "eslint . --ext .js --fix --ignore-path .gitignore",
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md}\"",
     "preinstall": "which link-module-alias && link-module-alias clean || echo",
     "postinstall": "link-module-alias"
   },
@@ -20,16 +35,20 @@
     "@pageActions": "src/pages/pageActions",
     "@tests": "tests",
     "@config": "config",
-    "@constants": "src/constants"
+    "@constants": "src/constants",
+    "@utils": "src/utils",
+    "@fixtures": "src/fixtures"
   },
   "author": "@castanedadev",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "link-module-alias": "^1.2.0",
     "path": "^0.12.7",
     "source-map": "^0.5.7",
-    "testcafe": "^1.14.2",
-    "winston": "^3.3.3"
+    "testcafe": "^3.4.0",
+    "testcafe-reporter-html": "^1.4.6",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

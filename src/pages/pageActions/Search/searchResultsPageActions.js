@@ -13,7 +13,7 @@ export default class SearchResultsPageActions {
   async filterItemByPrice(price) {
     logger.debug(`Filtering matching items by price [${price}]`);
     const results = this.searchResultsPage.matchingResults;
-    const filterFunction = (node, idx) => node.innerText.includes(price);
+    const filterFunction = (node, _idx) => node.innerText.includes(price);
     return results.filter(filterFunction, { price });
   }
 
@@ -26,8 +26,9 @@ export default class SearchResultsPageActions {
     logger.info('Verifying if item has discount');
 
     if (isLabelExpected) {
-      const discountLabel = itemSelector.find('.price-percent-reduction');
-      await t.expect(itemSelector.visible).ok();
+      await t
+        .expect(itemSelector.find('.price-percent-reduction').visible)
+        .ok();
       return;
     }
 

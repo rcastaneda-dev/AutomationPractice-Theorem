@@ -5,8 +5,8 @@ import FooterBasePage from './footerBasePage';
 
 export default class BasePage {
   /**
-     * Initializes a new instance of {@link BasePage}
-     */
+   * Initializes a new instance of {@link BasePage}
+   */
   constructor() {
     this.body = Selector('body');
     this.header = new HeaderBasePage();
